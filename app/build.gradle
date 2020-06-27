@@ -36,4 +36,7 @@ dependencies {
 
     // Google Map
     implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
+
+    // Easy Permissions
+    implementation 'com.sagar:livedatapermission:2.0.1'
 }
