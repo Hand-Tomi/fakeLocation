@@ -8,46 +8,45 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import com.eazypermissions.common.model.PermissionResult
 import com.eazypermissions.livedatapermission.PermissionManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
-import com.google.android.libraries.maps.model.LatLng
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, PermissionManager.PermissionObserver {
+class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
     companion object {
         const val PERMISSION_REQUEST_ID = 100
     }
 
-    private var map: GoogleMap? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
+    private val mapModel: MapModel by lazy {
+        GoogleMapModel(
+            supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-                .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        mapObserve()
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-        enableMyLocation()
-        moveMyLocation()
+    private fun mapObserve() {
+        mapModel.mapReadyEvent.observe(this) {
+            enableMyLocation()
+            moveMyLocation()
+        }
     }
 
     private fun moveMyLocation() {
         if (checkSelfPositionPermission()) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener {
-                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15f))
+                mapModel.moveCamera(it.toSimpleLatLng(), 15f)
             }
         }
     }
@@ -63,7 +62,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, PermissionManager.
 
     private fun enableMyLocation() {
         if (checkSelfPositionPermission()) {
-            map?.isMyLocationEnabled = true
+            mapModel.setIsMyLocationEnabled(true)
         } else {
             requestPermission()
         }
@@ -84,7 +83,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, PermissionManager.
     override fun setupObserver(permissionResultLiveData: LiveData<PermissionResult>) {
         permissionResultLiveData.observe(this, Observer<PermissionResult> {
             when (it) {
-                is PermissionResult.PermissionGranted -> {
+                is PermissionResult.PermissionGranted ->
+
+                {
                     if (it.requestCode == PERMISSION_REQUEST_ID) {
                         // 사용자가 권한을 부여한 후 여기에 논리를 추가하십시오.
                         enableMyLocation()
