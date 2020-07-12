@@ -6,3 +6,5 @@ import com.google.android.libraries.maps.model.LatLng
 fun SimpleLatLng.toLatLng() = LatLng(latitude, longitude)
 
 fun Location.toSimpleLatLng() = SimpleLatLng(latitude, longitude)
+
+fun LatLng.toSimpleLatLng() = SimpleLatLng(latitude, longitude)

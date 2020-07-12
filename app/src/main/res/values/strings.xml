@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">fakeLocation</string>
     <string name="title_activity_maps">Map</string>
+    <string name="target">target</string>
 </resources>

@@ -1,9 +1,15 @@
 package com.sugaryple.fakelocation
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Criteria
+import android.location.Location
+import android.location.LocationManager
+import android.location.LocationProvider
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
@@ -14,6 +20,8 @@ import com.eazypermissions.livedatapermission.PermissionManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.SupportMapFragment
+import com.google.android.libraries.maps.model.Marker
+import kotlinx.android.synthetic.main.activity_maps.*
 
 class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
@@ -27,6 +35,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
             supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         )
     }
+    private var centerMarker: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +43,58 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mapObserve()
+        button_play.setOnClickListener {
+            val centerLocation = mapModel.getCenterLocation()
+            if (centerLocation != null) {
+                centerMarker?.remove()
+                centerMarker = mapModel.addMarker(centerLocation)
+            }
+            pushLocation(centerLocation!!)
+        }
+        mockLocationProvider()
+    }
+
+    private val lm by lazy { this.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
+    private fun mockLocationProvider() {
+        lm.addTestProvider(
+            LocationManager.GPS_PROVIDER,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            Criteria.NO_REQUIREMENT,
+            Criteria.ACCURACY_FINE
+        );
+        lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
+    }
+
+    private fun pushLocation(simpleLatLng: SimpleLatLng) {
+        try {
+            val mockLocation = Location(LocationManager.GPS_PROVIDER);
+            val currentTime = System.currentTimeMillis();
+            mockLocation.latitude = simpleLatLng.latitude;
+            mockLocation.longitude = simpleLatLng.longitude;
+            mockLocation.time = currentTime;
+            mockLocation.accuracy = 1.0f;
+            mockLocation.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos();
+
+            lm.setTestProviderStatus(LocationManager.GPS_PROVIDER, LocationProvider.AVAILABLE, mockLocation.extras, currentTime);
+            lm.setTestProviderLocation(LocationManager.GPS_PROVIDER, mockLocation);
+        } catch(e: Exception){
+            e.printStackTrace();
+        }
     }
 
     private fun mapObserve() {
         mapModel.mapReadyEvent.observe(this) {
             enableMyLocation()
             moveMyLocation()
+            mapModel.setCompassEnabled(true)
+            mapModel.setZoomControlsEnabled(true)
+            button_play.isEnabled = true
         }
     }
 
