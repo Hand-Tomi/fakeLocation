@@ -1,4 +1,4 @@
-package com.sugaryple.fakelocation
+package com.sugaryple.fakelocation.model
 
 import android.app.Activity
 import android.content.Context
@@ -6,6 +6,7 @@ import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.SystemClock
+import com.sugaryple.fakelocation.data.SimpleLatLng
 
 class GpsProviderModel {
     private lateinit var locationManager: LocationManager

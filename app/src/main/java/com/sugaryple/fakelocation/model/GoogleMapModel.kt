@@ -1,4 +1,4 @@
-package com.sugaryple.fakelocation
+package com.sugaryple.fakelocation.model
 
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
@@ -9,6 +9,9 @@ import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
 import com.google.android.libraries.maps.model.MarkerOptions
+import com.sugaryple.fakelocation.data.SimpleLatLng
+import com.sugaryple.fakelocation.toLatLng
+import com.sugaryple.fakelocation.toSimpleLatLng
 
 class GoogleMapModel(mapFragment: SupportMapFragment): MapModel, OnMapReadyCallback {
 

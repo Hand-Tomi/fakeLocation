@@ -1,8 +1,9 @@
-package com.sugaryple.fakelocation
+package com.sugaryple.fakelocation.model
 
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 import com.google.android.libraries.maps.model.Marker
+import com.sugaryple.fakelocation.data.SimpleLatLng
 
 interface MapModel {
     val mapReadyEvent: LiveData<Unit>

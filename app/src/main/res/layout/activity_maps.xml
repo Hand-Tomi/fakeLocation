@@ -10,7 +10,7 @@
         android:name="com.google.android.libraries.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
+        tools:context=".maps.MapsActivity" />
 
     <ImageView
         android:layout_width="50dp"

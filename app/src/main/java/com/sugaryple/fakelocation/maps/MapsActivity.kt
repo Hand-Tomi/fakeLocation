@@ -1,4 +1,4 @@
-package com.sugaryple.fakelocation
+package com.sugaryple.fakelocation.maps
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -15,9 +15,16 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
+import com.sugaryple.fakelocation.R
+import com.sugaryple.fakelocation.model.GoogleMapModel
+import com.sugaryple.fakelocation.model.GpsProviderCallback
+import com.sugaryple.fakelocation.model.GpsProviderModel
+import com.sugaryple.fakelocation.model.MapModel
+import com.sugaryple.fakelocation.toSimpleLatLng
 import kotlinx.android.synthetic.main.activity_maps.*
 
-class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver, GpsProviderCallback {
+class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
+    GpsProviderCallback {
 
     companion object {
         const val PERMISSION_REQUEST_ID = 100
@@ -30,7 +37,8 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver, 
         )
     }
     private var centerMarker: Marker? = null
-    private val gpsProviderModel = GpsProviderModel()
+    private val gpsProviderModel =
+        GpsProviderModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
