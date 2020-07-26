@@ -48,4 +48,7 @@ dependencies {
     implementation "org.koin:koin-androidx-viewmodel:2.1.6"
 
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+
+    // WorkManager (https://developer.android.com/topic/libraries/architecture/workmanager/basics)
+    implementation "androidx.work:work-runtime-ktx:2.4.0"
 }

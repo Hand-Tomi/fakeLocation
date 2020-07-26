@@ -37,16 +37,15 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
         )
     }
     private var centerMarker: Marker? = null
-    private val gpsProviderModel =
-        GpsProviderModel()
+    private val gpsProviderModel by lazy {
+        GpsProviderModel(this.applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-        gpsProviderModel.init(this)
         gpsProviderModel.setCallback(this)
-        gpsProviderModel.initMockLocationProvider()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mapObserve()
         button_play.setOnClickListener {
