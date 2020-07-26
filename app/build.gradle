@@ -51,4 +51,7 @@ dependencies {
 
     // WorkManager (https://developer.android.com/topic/libraries/architecture/workmanager/basics)
     implementation "androidx.work:work-runtime-ktx:2.4.0"
+
+    // Timber (https://github.com/JakeWharton/timber)
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }

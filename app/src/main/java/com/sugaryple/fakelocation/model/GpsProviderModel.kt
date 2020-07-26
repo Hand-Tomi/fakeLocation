@@ -7,6 +7,7 @@ import android.location.LocationManager
 import android.os.SystemClock
 import androidx.work.*
 import com.sugaryple.fakelocation.data.SimpleLatLng
+import timber.log.Timber
 import java.lang.IllegalStateException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -64,6 +65,7 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters)
             = appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     override fun doWork(): Result {
+        Timber.v("doWork")
         return try {
             if (isGPSProviderEnabled()) {
                 initMockLocationProvider()
