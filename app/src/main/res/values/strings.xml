@@ -2,4 +2,10 @@
     <string name="app_name">fakeLocation</string>
     <string name="title_activity_maps">Map</string>
     <string name="target">target</string>
+    <string name="gps_service_notification_channel_id">GPS_SERVICE_NOTIFICATION_CHANNEL_ID</string>
+    <string name="gps_service_notification_title">gps_service_notification_title</string>
+    <string name="gps_service_notification_cancel">gps_service_notification_cancel</string>
+
+    <string name="gps_service_notification_channel_name">Changing Location…</string>
+    <string name="gps_service_notification_channel_description">latitude : %1$s\n longitude : %2$s</string>
 </resources>

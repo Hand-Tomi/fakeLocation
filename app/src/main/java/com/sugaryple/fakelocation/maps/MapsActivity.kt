@@ -16,15 +16,14 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
 import com.sugaryple.fakelocation.R
-import com.sugaryple.fakelocation.model.GoogleMapModel
-import com.sugaryple.fakelocation.model.GpsProviderCallback
-import com.sugaryple.fakelocation.model.GpsProviderModel
-import com.sugaryple.fakelocation.model.MapModel
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsCallBack
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsStarter
+import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.toSimpleLatLng
 import kotlinx.android.synthetic.main.activity_maps.*
 
 class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
-    GpsProviderCallback {
+    FakeGpsCallBack {
 
     companion object {
         const val PERMISSION_REQUEST_ID = 100
@@ -38,7 +37,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
     }
     private var centerMarker: Marker? = null
     private val gpsProviderModel by lazy {
-        GpsProviderModel(this.applicationContext)
+        FakeGpsStarter(this.applicationContext)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +53,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
                 centerMarker?.remove()
                 centerMarker = mapModel.addMarker(centerLocation)
             }
-            gpsProviderModel.pushLocation(centerLocation!!)
+            gpsProviderModel.start(centerLocation!!)
         }
 
     }
