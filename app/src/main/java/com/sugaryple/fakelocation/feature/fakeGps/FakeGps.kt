@@ -1,14 +1,10 @@
 package com.sugaryple.fakelocation.feature.fakeGps
 
 import android.content.Context
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.Operation
-import androidx.work.WorkManager
-import androidx.work.workDataOf
+import androidx.work.*
 import com.sugaryple.fakelocation.data.SimpleLatLng
-import java.util.*
 
-class FakeGpsStarter(appContext: Context) {
+class FakeGps(appContext: Context) {
 
     private var callback: FakeGpsCallBack? = null
     private val workManager = WorkManager.getInstance(appContext)
@@ -29,17 +25,23 @@ class FakeGpsStarter(appContext: Context) {
             )
             .addTag(TAG_FAKE_GPS_WORK)
             .build()
-        workOperation = workManager.enqueue(request)
-        workOperation?.state?.observeForever { state ->
-            when (state) {
-                is Operation.State.FAILURE -> onError(state.throwable)
+        workManager.getWorkInfoByIdLiveData(request.id).observeForever {
+            when (it.state) {
+                WorkInfo.State.FAILED -> {
+                    it.outputData.getString(FakeGpsWorker.DATA_KEY_REASON_OF_FAILURE)?.let { reason ->
+                        errorHandling(FakeGpsWorker.ReasonOfFailure.valueOf(reason))
+                    }
+                }
+                else -> { }
             }
         }
+        workOperation = workManager.enqueue(request)
     }
 
-    private fun onError(throwable: Throwable) {
-        when (throwable) {
-            is SecurityException -> callback?.requiredDebugSetting()
+    private fun errorHandling(reason: FakeGpsWorker.ReasonOfFailure) {
+        when (reason) {
+            FakeGpsWorker.ReasonOfFailure.MOCK_LOCATION_REQUIRED -> callback?.requiredDebugSetting()
+            else -> { }
         }
     }
 

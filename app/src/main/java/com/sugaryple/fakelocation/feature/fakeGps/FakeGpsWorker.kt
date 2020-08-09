@@ -1,10 +1,7 @@
 package com.sugaryple.fakelocation.feature.fakeGps
 
 import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.ForegroundInfo
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.sugaryple.fakelocation.model.GpsProviderModel
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -40,12 +37,20 @@ class FakeGpsWorker(
                 gpsProviderModel.initMockLocationProvider()
             }
             repeatPushLocation(latitude, longitude)
-            finish()
             Result.success()
         } catch(e: Exception){
             e.printStackTrace()
+            val reasonOfFailure = when (e) {
+                is SecurityException -> ReasonOfFailure.MOCK_LOCATION_REQUIRED
+                else -> ReasonOfFailure.ETC
+            }
+            Result.failure(
+                Data.Builder().putString(
+                    DATA_KEY_REASON_OF_FAILURE, reasonOfFailure.name
+                ).build()
+            )
+        } finally {
             finish()
-            Result.failure()
         }
     }
 
@@ -65,5 +70,11 @@ class FakeGpsWorker(
         const val TARGET_LATITUDE = "target_latitude"
         const val TARGET_LONGITUDE = "target_longitude"
         private const val DELAY_REPEAT_PUSH = 128L
+        const val DATA_KEY_REASON_OF_FAILURE = "data_key_failed_exception"
+    }
+
+    enum class ReasonOfFailure {
+        ETC,
+        MOCK_LOCATION_REQUIRED,
     }
 }

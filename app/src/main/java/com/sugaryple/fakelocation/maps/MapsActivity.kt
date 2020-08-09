@@ -17,7 +17,7 @@ import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
 import com.sugaryple.fakelocation.R
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsCallBack
-import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsStarter
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGps
 import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.toSimpleLatLng
 import kotlinx.android.synthetic.main.activity_maps.*
@@ -37,7 +37,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
     }
     private var centerMarker: Marker? = null
     private val gpsProviderModel by lazy {
-        FakeGpsStarter(this.applicationContext)
+        FakeGps(this.applicationContext)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
