@@ -7,4 +7,9 @@
 
     <string name="gps_service_notification_channel_name">Changing Location…</string>
     <string name="gps_service_notification_channel_description">latitude : %1$s\n longitude : %2$s</string>
+    <string name="request_selecting_mock_location_dialog_title">Mock location app setup required</string>
+    <string name="request_selecting_mock_location_dialog_description">Mock position is disabled. Please set it as a mock location app.</string>
+
+    <string name="request_selecting_mock_location_dialog_button_debug_setting">Move Debug Setting</string>
+    <string name="request_selecting_mock_location_dialog_button_cancel">Cancel</string>
 </resources>
