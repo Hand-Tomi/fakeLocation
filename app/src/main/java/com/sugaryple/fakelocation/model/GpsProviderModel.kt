@@ -1,15 +1,11 @@
 package com.sugaryple.fakelocation.model
 
-import android.content.Context
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.SystemClock
 
-class GpsProviderModel(appContext: Context) {
-
-    private val locationManager: LocationManager
-            = appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+class GpsProviderModel(private val locationManager: LocationManager) {
 
     fun isGPSProviderEnabled(): Boolean
             = locationManager.isProviderEnabled(providerName)

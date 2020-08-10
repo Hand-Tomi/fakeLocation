@@ -1,9 +1,11 @@
 package com.sugaryple.fakelocation.feature.fakeGps
 
+import android.app.Application
 import android.content.Context
 import androidx.work.*
 import com.sugaryple.fakelocation.model.GpsProviderModel
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.lang.IllegalStateException
 
@@ -13,9 +15,8 @@ class FakeGpsWorker(
     parameters: WorkerParameters
 ) : CoroutineWorker(appContext, parameters) {
 
-    private val gpsProviderModel = GpsProviderModel(appContext)
-
-    private val fakeGpsNotificationController = FakeGpsNotificationController(appContext)
+    private val gpsProviderModel: GpsProviderModel by (appContext as Application).inject()
+    private val fakeGpsNotificationController: FakeGpsNotificationController by (appContext as Application).inject()
 
     override suspend fun doWork(): Result {
         Timber.v("##FakeGps## doWork")

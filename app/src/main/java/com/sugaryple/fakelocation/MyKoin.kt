@@ -1,7 +1,12 @@
 package com.sugaryple.fakelocation
 
 import android.content.Context
+import android.location.LocationManager
+import androidx.work.WorkManager
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGps
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsNotificationController
 import com.sugaryple.fakelocation.maps.MapsViewModel
+import com.sugaryple.fakelocation.model.GpsProviderModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -23,11 +28,24 @@ class MyKoin {
     }
 
     private fun getModules() = listOf(
-        getViewModels()
+        getViewModels(),
+        getManagerModules(),
+        getGpsModules()
     )
 
     private fun getViewModels() = module {
         viewModel { MapsViewModel() }
+    }
+
+    private fun getManagerModules() = module {
+        single { WorkManager.getInstance(androidContext()) }
+        single { androidContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager }
+    }
+
+    private fun getGpsModules() = module {
+        single { FakeGps(get()) }
+        single { FakeGpsNotificationController(androidContext()) }
+        single { GpsProviderModel(get()) }
     }
 
 }

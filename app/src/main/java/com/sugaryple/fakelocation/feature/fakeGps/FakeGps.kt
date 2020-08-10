@@ -1,13 +1,11 @@
 package com.sugaryple.fakelocation.feature.fakeGps
 
-import android.content.Context
 import androidx.work.*
 import com.sugaryple.fakelocation.data.SimpleLatLng
 
-class FakeGps(appContext: Context) {
+class FakeGps(private val workManager: WorkManager) {
 
     private var callback: FakeGpsCallBack? = null
-    private val workManager = WorkManager.getInstance(appContext)
     private var workOperation: Operation? = null
 
     fun setCallback(callback: FakeGpsCallBack) {

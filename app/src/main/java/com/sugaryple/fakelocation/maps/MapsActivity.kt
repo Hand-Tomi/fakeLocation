@@ -26,6 +26,7 @@ import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.toSimpleLatLng
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.alert_dialog_image_view.view.*
+import org.koin.android.ext.android.inject
 
 class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
     FakeGpsCallBack {
@@ -41,15 +42,13 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
         )
     }
     private var centerMarker: Marker? = null
-    private val gpsProviderModel by lazy {
-        FakeGps(this.applicationContext)
-    }
+    private val fakeGps: FakeGps by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-        gpsProviderModel.setCallback(this)
+        fakeGps.setCallback(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mapObserve()
         button_play.setOnClickListener {
@@ -58,7 +57,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
                 centerMarker?.remove()
                 centerMarker = mapModel.addMarker(centerLocation)
             }
-            gpsProviderModel.start(centerLocation!!)
+            fakeGps.start(centerLocation!!)
         }
 
     }
