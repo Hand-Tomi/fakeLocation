@@ -1,9 +1,11 @@
 package com.sugaryple.fakelocation.maps
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -156,7 +158,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
             .setPositiveButton(
                 R.string.request_selecting_mock_location_dialog_button_debug_setting
             ) { _, _ ->
-                // sign in the user ...
+                startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
             }
             .setNegativeButton(R.string.request_selecting_mock_location_dialog_button_cancel
             ) { dialog, _ ->
