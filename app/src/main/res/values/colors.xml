@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#96b9d9</color>
-    <color name="primaryLightColor">#c8ebff</color>
-    <color name="primaryDarkColor">#6689a7</color>
-    <color name="secondaryColor">#f2d022</color>
-    <color name="secondaryLightColor">#ffff5d</color>
-    <color name="secondaryDarkColor">#bb9f00</color>
-    <color name="primaryTextColor">#000000</color>
-    <color name="secondaryTextColor">#000000</color>
+    <color name="sky_blue">#96b9d9</color>
+    <color name="sky_blue_light">#c8ebff</color>
+    <color name="sky_blue_dark">#6689a7</color>
+    <color name="yellow">#f2d022</color>
+    <color name="yellow_light">#ffff5d</color>
+    <color name="yellow_dark">#bb9f00</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="yellow_orange">#F2BE22</color>
+    <color name="orange">#F2A922</color>
+    <color name="brown">#A65E4E</color>
+
+
 </resources>
