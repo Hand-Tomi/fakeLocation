@@ -43,6 +43,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
     }
     private var centerMarker: Marker? = null
     private val fakeGps: FakeGps by inject()
+    private val gpsProviderModel: GpsProviderModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +60,14 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
             }
             fakeGps.start(centerLocation!!)
         }
+        gpsProviderObserve()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if (gpsProviderModel.isGPSProviderEnabled()) {
+            gpsProviderModel.initMockLocationProvider()
+        }
     }
 
     private fun mapObserve() {
@@ -69,6 +77,14 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
             mapModel.setCompassEnabled(true)
             mapModel.setZoomControlsEnabled(true)
             button_play.isEnabled = true
+        }
+    }
+
+    private fun gpsProviderObserve() {
+        gpsProviderModel.eventMockLocationRequest.observe(this) {
+            it.getContentIfNotHandled()?.let {
+                requiredDebugSetting()
+            }
         }
     }
 

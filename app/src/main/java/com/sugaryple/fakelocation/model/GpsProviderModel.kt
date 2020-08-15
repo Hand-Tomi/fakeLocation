@@ -4,8 +4,16 @@ import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.SystemClock
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.sugaryple.fakelocation.core.Event
+import java.lang.Exception
 
 class GpsProviderModel(private val locationManager: LocationManager) {
+
+    private val _eventMockLocationRequest = MutableLiveData<Event<Unit>>()
+    val eventMockLocationRequest: LiveData<Event<Unit>>
+        get() = _eventMockLocationRequest
 
     fun isGPSProviderEnabled(): Boolean
             = locationManager.isProviderEnabled(providerName)
@@ -22,20 +30,29 @@ class GpsProviderModel(private val locationManager: LocationManager) {
         locationManager.setTestProviderLocation(providerName, mockLocation)
     }
 
+    /**
+     * Mock LocationセットアップをしないとSecurityExceptionが発生する可能性がある
+      */
     fun initMockLocationProvider() {
-        locationManager.addTestProvider(
-            providerName,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            Criteria.NO_REQUIREMENT,
-            Criteria.ACCURACY_FINE
-        )
-        locationManager.setTestProviderEnabled(providerName, true)
+        try {
+            locationManager.addTestProvider(
+                providerName,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                Criteria.NO_REQUIREMENT,
+                Criteria.ACCURACY_FINE
+            )
+            locationManager.setTestProviderEnabled(providerName, true)
+        } catch (e: Exception) {
+            when (e) {
+                is SecurityException -> _eventMockLocationRequest.value = Event(Unit)
+            }
+        }
     }
 
     companion object {

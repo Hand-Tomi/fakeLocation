@@ -56,4 +56,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     implementation 'com.google.android.material:material:1.2.0'
+
+    // LiveDataKtx (https://github.com/Shopify/livedata-ktx)
+    implementation "com.shopify:livedata-ktx:3.0.0"
 }
