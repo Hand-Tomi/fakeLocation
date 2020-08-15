@@ -1,12 +1,9 @@
 package com.sugaryple.fakelocation.maps
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.Settings
-import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
@@ -18,14 +15,13 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sugaryple.fakelocation.R
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsCallBack
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGps
 import com.sugaryple.fakelocation.model.*
+import com.sugaryple.fakelocation.showOnlyOne
 import com.sugaryple.fakelocation.toSimpleLatLng
 import kotlinx.android.synthetic.main.activity_maps.*
-import kotlinx.android.synthetic.main.alert_dialog_image_view.view.*
 import org.koin.android.ext.android.inject
 
 class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
@@ -33,6 +29,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
 
     companion object {
         const val PERMISSION_REQUEST_ID = 100
+        const val TAG_REQUIRED_MOCK_LOCATION_DIALOG = "TAG_REQUIRED_MOCK_LOCATION_DIALOG"
     }
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -162,25 +159,8 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
     }
 
     override fun requiredDebugSetting() {
-        MaterialAlertDialogBuilder(this)
-            .setView(
-                View.inflate(this, R.layout.alert_dialog_image_view, null).apply {
-                    this.image_view.setImageResource(R.drawable.sample_image)
-                }
-            )
-            .setTitle(R.string.request_selecting_mock_location_dialog_title)
-            .setMessage(R.string.request_selecting_mock_location_dialog_description)
-            .setPositiveButton(
-                R.string.request_selecting_mock_location_dialog_button_debug_setting
-            ) { _, _ ->
-                startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
-            }
-            .setNegativeButton(R.string.request_selecting_mock_location_dialog_button_cancel
-            ) { dialog, _ ->
-                dialog.cancel()
-            }
-            .show()
+        RequiredMockLocationDialog.newInstance()
+            .showOnlyOne(supportFragmentManager, TAG_REQUIRED_MOCK_LOCATION_DIALOG)
     }
-
 
 }
