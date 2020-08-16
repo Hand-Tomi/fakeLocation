@@ -16,9 +16,9 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
 import com.sugaryple.fakelocation.R
+import com.sugaryple.fakelocation.data.SimpleLatLng
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkManager
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
-import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorker
 import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.showOnlyOne
 import com.sugaryple.fakelocation.toSimpleLatLng
@@ -38,7 +38,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
             supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         )
     }
-    private var centerMarker: Marker? = null
+    private var targetMarker: Marker? = null
     private val fakeGpsManager: FakeGpsWorkManager by inject()
     private val gpsProviderModel: GpsProviderModel by inject()
 
@@ -46,25 +46,38 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-        fakeGpsManager.state.observe(this) {
-            when (it) {
-                is FakeGpsWorkSate.On -> { }
-                is FakeGpsWorkSate.Failed -> startRequiredMockLocationDialog()
-                else -> { }
-            }
-        }
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mapObserve()
         button_play.setOnClickListener {
             val centerLocation = mapModel.getCenterLocation()
-            if (centerLocation != null) {
-                centerMarker?.remove()
-                centerMarker = mapModel.addMarker(centerLocation)
-            }
             fakeGpsManager.start(centerLocation!!)
         }
         gpsProviderObserve()
+        fakeGpsManagerObserve()
+    }
+
+    private fun fakeGpsManagerObserve() {
+        fakeGpsManager.state.observe(this) { state ->
+            when (state) {
+                is FakeGpsWorkSate.On -> {
+                    state.pinLatLng?.let { setTargetMarker(it) }
+                }
+                is FakeGpsWorkSate.Failed -> {
+                    clearTargetMarker()
+                    startRequiredMockLocationDialog()
+                }
+                else -> { clearTargetMarker() }
+            }
+        }
+    }
+
+    private fun clearTargetMarker() {
+        targetMarker?.remove()
+    }
+
+    private fun setTargetMarker(latLng: SimpleLatLng) {
+        clearTargetMarker()
+        targetMarker = mapModel.addMarker(latLng)
     }
 
     override fun onResume() {
