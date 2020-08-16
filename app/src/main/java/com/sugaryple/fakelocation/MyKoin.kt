@@ -3,7 +3,7 @@ package com.sugaryple.fakelocation
 import android.content.Context
 import android.location.LocationManager
 import androidx.work.WorkManager
-import com.sugaryple.fakelocation.feature.fakeGps.FakeGps
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkManager
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsNotificationController
 import com.sugaryple.fakelocation.maps.MapsViewModel
 import com.sugaryple.fakelocation.model.GpsProviderModel
@@ -43,7 +43,7 @@ class MyKoin {
     }
 
     private fun getGpsModules() = module {
-        single { FakeGps(get()) }
+        single { FakeGpsWorkManager(get()) }
         single { FakeGpsNotificationController(androidContext()) }
         single { GpsProviderModel(get()) }
     }

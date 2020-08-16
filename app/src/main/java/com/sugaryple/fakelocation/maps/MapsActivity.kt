@@ -16,16 +16,16 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
 import com.sugaryple.fakelocation.R
-import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsCallBack
-import com.sugaryple.fakelocation.feature.fakeGps.FakeGps
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkManager
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
+import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorker
 import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.showOnlyOne
 import com.sugaryple.fakelocation.toSimpleLatLng
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.koin.android.ext.android.inject
 
-class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
-    FakeGpsCallBack {
+class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
     companion object {
         const val PERMISSION_REQUEST_ID = 100
@@ -39,14 +39,26 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
         )
     }
     private var centerMarker: Marker? = null
-    private val fakeGps: FakeGps by inject()
+    private val fakeGpsManager: FakeGpsWorkManager by inject()
     private val gpsProviderModel: GpsProviderModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-        fakeGps.setCallback(this)
+        fakeGpsManager.state.observe(this) {
+            when (it) {
+                is FakeGpsWorkSate.On -> { }
+                is FakeGpsWorkSate.Failed -> {
+                    when (it.reason) {
+                        FakeGpsWorker.ReasonOfFailure.MOCK_LOCATION_REQUIRED -> startRequiredMockLocationDialog()
+                        else -> { }
+                    }
+                }
+                else -> { }
+            }
+        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mapObserve()
         button_play.setOnClickListener {
@@ -55,7 +67,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
                 centerMarker?.remove()
                 centerMarker = mapModel.addMarker(centerLocation)
             }
-            fakeGps.start(centerLocation!!)
+            fakeGpsManager.start(centerLocation!!)
         }
         gpsProviderObserve()
     }
@@ -80,7 +92,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
     private fun gpsProviderObserve() {
         gpsProviderModel.eventMockLocationRequest.observe(this) {
             it.getContentIfNotHandled()?.let {
-                requiredDebugSetting()
+                startRequiredMockLocationDialog()
             }
         }
     }
@@ -158,7 +170,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver,
         })
     }
 
-    override fun requiredDebugSetting() {
+    fun startRequiredMockLocationDialog() {
         RequiredMockLocationDialog.newInstance()
             .showOnlyOne(supportFragmentManager, TAG_REQUIRED_MOCK_LOCATION_DIALOG)
     }

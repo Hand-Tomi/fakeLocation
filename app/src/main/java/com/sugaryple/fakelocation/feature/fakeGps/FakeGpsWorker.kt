@@ -34,6 +34,8 @@ class FakeGpsWorker(
             if (latitude == Double.MIN_VALUE || longitude == Double.MIN_VALUE) {
                 throw IllegalStateException("data is null")
             }
+            // 현재 어떤 좌표를 Fake하고있는지 알리기위해 setProgress를 사용한다.
+            setProgress(inputData)
             if (gpsProviderModel.isGPSProviderEnabled()) {
                 gpsProviderModel.initMockLocationProvider()
             }
