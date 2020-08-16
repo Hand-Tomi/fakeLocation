@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.work.*
 import com.sugaryple.fakelocation.data.SimpleLatLng
-import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorker.Companion.DATA_KEY_REASON_OF_FAILURE
 
 class FakeGpsWorkManager(private val workManager: WorkManager) {
 
@@ -17,11 +16,7 @@ class FakeGpsWorkManager(private val workManager: WorkManager) {
             when (workInfo?.state) {
                 null -> FakeGpsWorkSate.Uninitialized
                 WorkInfo.State.RUNNING -> FakeGpsWorkSate.On(workInfo.toTargetLatLng())
-                WorkInfo.State.FAILED -> {
-                    val reasonString = workInfo.outputData.getString(DATA_KEY_REASON_OF_FAILURE)
-                    val reason = reasonString?.let { FakeGpsWorker.ReasonOfFailure.valueOf(it) }
-                    FakeGpsWorkSate.Failed(reason)
-                }
+                WorkInfo.State.FAILED -> FakeGpsWorkSate.Failed
                 else -> FakeGpsWorkSate.Off
             }
         }

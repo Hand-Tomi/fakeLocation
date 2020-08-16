@@ -49,12 +49,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
         fakeGpsManager.state.observe(this) {
             when (it) {
                 is FakeGpsWorkSate.On -> { }
-                is FakeGpsWorkSate.Failed -> {
-                    when (it.reason) {
-                        FakeGpsWorker.ReasonOfFailure.MOCK_LOCATION_REQUIRED -> startRequiredMockLocationDialog()
-                        else -> { }
-                    }
-                }
+                is FakeGpsWorkSate.Failed -> startRequiredMockLocationDialog()
                 else -> { }
             }
         }
