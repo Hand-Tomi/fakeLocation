@@ -37,6 +37,10 @@ class FakeGpsWorkManager(private val workManager: WorkManager) {
         )
     }
 
+    fun stop() {
+        workManager.cancelUniqueWork(NAME_FAKE_GPS_WORK)
+    }
+
     companion object {
         const val NAME_FAKE_GPS_WORK = "name_fake_gps_work"
     }

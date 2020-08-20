@@ -50,7 +50,11 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
         mapObserve()
         button_play.setOnClickListener {
             val centerLocation = mapModel.getCenterLocation()
-            fakeGpsManager.start(centerLocation!!)
+            when (fakeGpsManager.state.value) {
+                is FakeGpsWorkSate.On -> fakeGpsManager.stop()
+                is FakeGpsWorkSate.Off,
+                is FakeGpsWorkSate.Failed -> fakeGpsManager.start(centerLocation!!)
+            }
         }
         gpsProviderObserve()
         fakeGpsManagerObserve()
