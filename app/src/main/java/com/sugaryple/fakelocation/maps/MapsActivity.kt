@@ -68,12 +68,17 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
         when (state) {
             is FakeGpsWorkSate.On -> {
                 state.pinLatLng?.let { setTargetMarker(it) }
+                button_play.setImageResource(R.drawable.ic_baseline_my_location_24)
             }
             is FakeGpsWorkSate.Failed -> {
                 clearTargetMarker()
                 startRequiredMockLocationDialog()
+                button_play.setImageResource(R.drawable.ic_baseline_location_searching_24)
             }
-            else -> { clearTargetMarker() }
+            else -> {
+                clearTargetMarker()
+                button_play.setImageResource(R.drawable.ic_baseline_location_searching_24)
+            }
         }
     }
 
