@@ -57,17 +57,19 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
     }
 
     private fun fakeGpsManagerObserve() {
-        fakeGpsManager.state.observe(this) { state ->
-            when (state) {
-                is FakeGpsWorkSate.On -> {
-                    state.pinLatLng?.let { setTargetMarker(it) }
-                }
-                is FakeGpsWorkSate.Failed -> {
-                    clearTargetMarker()
-                    startRequiredMockLocationDialog()
-                }
-                else -> { clearTargetMarker() }
+        fakeGpsManager.state.observe(this) { onChangedState(it) }
+    }
+
+    private fun onChangedState(state: FakeGpsWorkSate) {
+        when (state) {
+            is FakeGpsWorkSate.On -> {
+                state.pinLatLng?.let { setTargetMarker(it) }
             }
+            is FakeGpsWorkSate.Failed -> {
+                clearTargetMarker()
+                startRequiredMockLocationDialog()
+            }
+            else -> { clearTargetMarker() }
         }
     }
 
@@ -94,6 +96,9 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
             mapModel.setCompassEnabled(true)
             mapModel.setZoomControlsEnabled(true)
             button_play.isEnabled = true
+
+            // fakeGps가 살아 있다면 그 상태로 초기화 한다.
+            fakeGpsManager.state.value?.let { onChangedState(it) }
         }
     }
 
