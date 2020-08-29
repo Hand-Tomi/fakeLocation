@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
@@ -17,6 +18,7 @@ import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
 import com.sugaryple.fakelocation.R
 import com.sugaryple.fakelocation.data.SimpleLatLng
+import com.sugaryple.fakelocation.databinding.ActivityMapsBinding
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkManager
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
 import com.sugaryple.fakelocation.model.*
@@ -24,6 +26,7 @@ import com.sugaryple.fakelocation.showOnlyOne
 import com.sugaryple.fakelocation.toSimpleLatLng
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
@@ -38,24 +41,23 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
             supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         )
     }
+    private val viewModel: MapsViewModel by viewModel()
     private var targetMarker: Marker? = null
     private val fakeGpsManager: FakeGpsWorkManager by inject()
     private val gpsProviderModel: GpsProviderModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mapObserve()
-        button_play.setOnClickListener {
-            val centerLocation = mapModel.getCenterLocation()
-            when (fakeGpsManager.state.value) {
-                is FakeGpsWorkSate.On -> fakeGpsManager.stop()
-                is FakeGpsWorkSate.Off,
-                is FakeGpsWorkSate.Failed -> fakeGpsManager.start(centerLocation!!)
-            }
+        DataBindingUtil.setContentView<ActivityMapsBinding>(
+            this,
+            R.layout.activity_maps
+        ).apply {
+            lifecycleOwner = this@MapsActivity
+            viewModel = this@MapsActivity.viewModel
         }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        viewModelObserve()
+        mapObserve()
         gpsProviderObserve()
         fakeGpsManagerObserve()
     }
@@ -93,8 +95,26 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
     override fun onResume() {
         super.onResume()
+        gpsProviderModelInit()
+    }
+
+    private fun gpsProviderModelInit() {
         if (gpsProviderModel.isGPSProviderEnabled()) {
             gpsProviderModel.initMockLocationProvider()
+        }
+    }
+
+    private fun viewModelObserve() {
+        viewModel.clickEventPlay.observe(this) {
+            it.getContentIfNotHandled()?.let {
+                val centerLocation = mapModel.getCenterLocation()
+                when (fakeGpsManager.state.value) {
+                    is FakeGpsWorkSate.On -> fakeGpsManager.stop()
+                    is FakeGpsWorkSate.Off,
+                    is FakeGpsWorkSate.Failed,
+                    is FakeGpsWorkSate.Uninitialized -> fakeGpsManager.start(centerLocation!!)
+                }
+            }
         }
     }
 
@@ -121,8 +141,8 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
     private fun moveMyLocation() {
         if (checkSelfPositionPermission()) {
-            fusedLocationClient?.lastLocation?.addOnSuccessListener {
-                mapModel.moveCamera(it.toSimpleLatLng(), 15f)
+            fusedLocationClient?.lastLocation?.addOnSuccessListener { myLocation ->
+                myLocation?.let { mapModel.moveCamera(it.toSimpleLatLng(), 15f) }
             }
         }
     }
