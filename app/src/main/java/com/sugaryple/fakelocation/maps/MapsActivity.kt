@@ -12,8 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import com.eazypermissions.common.model.PermissionResult
 import com.eazypermissions.livedatapermission.PermissionManager
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
 import com.sugaryple.fakelocation.R
@@ -21,9 +19,9 @@ import com.sugaryple.fakelocation.data.SimpleLatLng
 import com.sugaryple.fakelocation.databinding.ActivityMapsBinding
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkManager
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
+import com.sugaryple.fakelocation.helper.MyLocationHelper
 import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.showOnlyOne
-import com.sugaryple.fakelocation.toSimpleLatLng
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -35,7 +33,6 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
         const val TAG_REQUIRED_MOCK_LOCATION_DIALOG = "TAG_REQUIRED_MOCK_LOCATION_DIALOG"
     }
 
-    private var fusedLocationClient: FusedLocationProviderClient? = null
     private val mapModel: MapModel by lazy {
         GoogleMapModel(
             supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -45,6 +42,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
     private var targetMarker: Marker? = null
     private val fakeGpsManager: FakeGpsWorkManager by inject()
     private val gpsProviderModel: GpsProviderModel by inject()
+    private val myLocationHelper: MyLocationHelper by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,11 +53,17 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
             lifecycleOwner = this@MapsActivity
             viewModel = this@MapsActivity.viewModel
         }
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         viewModelObserve()
         mapObserve()
         gpsProviderObserve()
         fakeGpsManagerObserve()
+        myLocationObserve()
+    }
+
+    private fun myLocationObserve() {
+        myLocationHelper.myLocation.observe(this) { myLocation ->
+            mapModel.moveCamera(myLocation, 15f)
+        }
     }
 
     private fun fakeGpsManagerObserve() {
@@ -141,9 +145,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
     private fun moveMyLocation() {
         if (checkSelfPositionPermission()) {
-            fusedLocationClient?.lastLocation?.addOnSuccessListener { myLocation ->
-                myLocation?.let { mapModel.moveCamera(it.toSimpleLatLng(), 15f) }
-            }
+            myLocationHelper.init()
         }
     }
 
