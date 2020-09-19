@@ -20,6 +20,7 @@ import com.sugaryple.fakelocation.databinding.ActivityMapsBinding
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkManager
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
 import com.sugaryple.fakelocation.helper.MyLocationHelper
+import com.sugaryple.fakelocation.map.GoogleMapModel
 import com.sugaryple.fakelocation.map.MapModel
 import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.showOnlyOne

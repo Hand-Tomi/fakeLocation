@@ -1,4 +1,4 @@
-package com.sugaryple.fakelocation.model
+package com.sugaryple.fakelocation.map
 
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
