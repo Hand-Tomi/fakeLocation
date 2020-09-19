@@ -31,14 +31,13 @@
             android:contentDescription="@string/target" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/ic_baseline_my_location_24"
-            android:enabled="false"
+            android:enabled="@{viewModel.enabledPlayButton}"
             android:onClick="@{() -> viewModel.onClickPlay()}"
+            map:imageResource="@{viewModel.resPlayButtonIcon}"
             map:layout_constraintBottom_toBottomOf="parent"
             map:layout_constraintStart_toStartOf="parent" />
 

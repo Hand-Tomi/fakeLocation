@@ -22,7 +22,6 @@ import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
 import com.sugaryple.fakelocation.helper.MyLocationHelper
 import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.showOnlyOne
-import kotlinx.android.synthetic.main.activity_maps.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -67,25 +66,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
     }
 
     private fun fakeGpsManagerObserve() {
-        fakeGpsManager.state.observe(this) { onChangedState(it) }
-    }
-
-    private fun onChangedState(state: FakeGpsWorkSate) {
-        when (state) {
-            is FakeGpsWorkSate.On -> {
-                state.pinLatLng?.let { setTargetMarker(it) }
-                button_play.setImageResource(R.drawable.ic_baseline_my_location_24)
-            }
-            is FakeGpsWorkSate.Failed -> {
-                clearTargetMarker()
-                startRequiredMockLocationDialog()
-                button_play.setImageResource(R.drawable.ic_baseline_location_searching_24)
-            }
-            else -> {
-                clearTargetMarker()
-                button_play.setImageResource(R.drawable.ic_baseline_location_searching_24)
-            }
-        }
+        fakeGpsManager.state.observe(this) { viewModel.onChangedState(it) }
     }
 
     private fun clearTargetMarker() {
@@ -128,10 +109,11 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
             moveMyLocation()
             mapModel.setCompassEnabled(true)
             mapModel.setZoomControlsEnabled(true)
-            button_play.isEnabled = true
+            // TODO 기능 구현 필요
+            // button_play.isEnabled = true
 
             // fakeGps가 살아 있다면 그 상태로 초기화 한다.
-            fakeGpsManager.state.value?.let { onChangedState(it) }
+            fakeGpsManager.state.value?.let { viewModel.onChangedState(it) }
         }
     }
 
