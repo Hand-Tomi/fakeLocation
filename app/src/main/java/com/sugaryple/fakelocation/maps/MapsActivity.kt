@@ -24,6 +24,7 @@ import com.sugaryple.fakelocation.model.*
 import com.sugaryple.fakelocation.showOnlyOne
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
@@ -37,7 +38,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
             supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         )
     }
-    private val viewModel: MapsViewModel by viewModel()
+    private val viewModel: MapsViewModel by viewModel { parametersOf(mapModel) }
     private var targetMarker: Marker? = null
     private val fakeGpsManager: FakeGpsWorkManager by inject()
     private val gpsProviderModel: GpsProviderModel by inject()

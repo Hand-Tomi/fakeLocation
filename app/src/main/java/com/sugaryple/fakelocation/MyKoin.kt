@@ -9,6 +9,7 @@ import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsNotificationController
 import com.sugaryple.fakelocation.helper.MyLocationHelper
 import com.sugaryple.fakelocation.maps.MapsViewModel
 import com.sugaryple.fakelocation.model.GpsProviderModel
+import com.sugaryple.fakelocation.model.MapModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -37,7 +38,9 @@ class MyKoin {
     )
 
     private fun getViewModels() = module {
-        viewModel { MapsViewModel() }
+        viewModel { (mapModel: MapModel) ->
+            MapsViewModel(mapModel)
+        }
     }
 
     private fun getManagerModules() = module {

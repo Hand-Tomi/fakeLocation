@@ -6,8 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.sugaryple.fakelocation.R
 import com.sugaryple.fakelocation.core.Event
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
+import com.sugaryple.fakelocation.model.MapModel
 
-class MapsViewModel: ViewModel() {
+class MapsViewModel(
+    private val mapModel: MapModel
+): ViewModel() {
 
     private val _resPlayButtonIcon = MutableLiveData<Int>(R.drawable.ic_baseline_my_location_24)
     val resPlayButtonIcon: LiveData<Int>
