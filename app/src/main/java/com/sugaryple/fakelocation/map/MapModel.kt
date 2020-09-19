@@ -2,7 +2,6 @@ package com.sugaryple.fakelocation.map
 
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
-import com.google.android.libraries.maps.model.Marker
 import com.sugaryple.fakelocation.data.SimpleLatLng
 
 interface MapModel {
@@ -17,5 +16,5 @@ interface MapModel {
     fun setZoomControlsEnabled(enable: Boolean)
     fun setCompassEnabled(enable: Boolean)
     fun getCenterLocation(): SimpleLatLng?
-    fun addMarker(location: SimpleLatLng): Marker?
+    fun addMarker(location: SimpleLatLng): MyMarker?
 }

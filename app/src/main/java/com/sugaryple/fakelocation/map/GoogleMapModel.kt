@@ -7,10 +7,8 @@ import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.OnMapReadyCallback
 import com.google.android.libraries.maps.SupportMapFragment
-import com.google.android.libraries.maps.model.Marker
 import com.google.android.libraries.maps.model.MarkerOptions
 import com.sugaryple.fakelocation.data.SimpleLatLng
-import com.sugaryple.fakelocation.map.MapModel
 import com.sugaryple.fakelocation.toLatLng
 import com.sugaryple.fakelocation.toSimpleLatLng
 
@@ -61,11 +59,11 @@ class GoogleMapModel(mapFragment: SupportMapFragment): MapModel, OnMapReadyCallb
     override fun getCenterLocation(): SimpleLatLng? =
         map?.projection?.visibleRegion?.latLngBounds?.center?.toSimpleLatLng()
 
-    override fun addMarker(location: SimpleLatLng): Marker? {
+    override fun addMarker(location: SimpleLatLng): MyMarker? {
         return map?.addMarker(
             MarkerOptions()
                 .position(location.toLatLng())
-        )
+        )?.toMy()
     }
 
 }
