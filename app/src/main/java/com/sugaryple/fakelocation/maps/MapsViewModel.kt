@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.sugaryple.fakelocation.R
 import com.sugaryple.fakelocation.core.Event
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
-import com.sugaryple.fakelocation.model.MapModel
+import com.sugaryple.fakelocation.map.MapModel
 
 class MapsViewModel(
     private val mapModel: MapModel

@@ -10,6 +10,7 @@ import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.Marker
 import com.google.android.libraries.maps.model.MarkerOptions
 import com.sugaryple.fakelocation.data.SimpleLatLng
+import com.sugaryple.fakelocation.map.MapModel
 import com.sugaryple.fakelocation.toLatLng
 import com.sugaryple.fakelocation.toSimpleLatLng
 
