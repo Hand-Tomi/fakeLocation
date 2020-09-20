@@ -28,6 +28,10 @@ class MapsViewModel(
     val clickEventPlay: LiveData<Event<Unit>>
         get() = _clickEventPlay
 
+    private val _fakeGpsWorkFailedEvent = MutableLiveData<Event<Unit>>()
+    val fakeGpsWorkFailedEvent: LiveData<Event<Unit>>
+        get() = _fakeGpsWorkFailedEvent
+
     fun onClickPlay() {
         _clickEventPlay.value = Event(Unit)
     }
@@ -49,8 +53,7 @@ class MapsViewModel(
             }
             is FakeGpsWorkSate.Failed -> {
                  clearTargetMarker()
-                // TODO 기능 구현 해야 됨
-                // startRequiredMockLocationDialog()
+                _fakeGpsWorkFailedEvent.value = Event(Unit)
                 _resPlayButtonIcon.value = R.drawable.ic_baseline_location_searching_24
             }
             else -> {

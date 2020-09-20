@@ -81,15 +81,21 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
     }
 
     private fun viewModelObserve() {
-        viewModel.clickEventPlay.observe(this) {
-            it.getContentIfNotHandled()?.let {
-                val centerLocation = mapModel.getCenterLocation()
-                when (fakeGpsManager.state.value) {
-                    is FakeGpsWorkSate.On -> fakeGpsManager.stop()
-                    is FakeGpsWorkSate.Off,
-                    is FakeGpsWorkSate.Failed,
-                    is FakeGpsWorkSate.Uninitialized -> fakeGpsManager.start(centerLocation!!)
+        with(viewModel) {
+            clickEventPlay.observe(this@MapsActivity) {
+                it.getContentIfNotHandled()?.let {
+                    val centerLocation = mapModel.getCenterLocation()
+                    when (fakeGpsManager.state.value) {
+                        is FakeGpsWorkSate.On -> fakeGpsManager.stop()
+                        is FakeGpsWorkSate.Off,
+                        is FakeGpsWorkSate.Failed,
+                        is FakeGpsWorkSate.Uninitialized -> fakeGpsManager.start(centerLocation!!)
+                    }
                 }
+            }
+            fakeGpsWorkFailedEvent.observe(this@MapsActivity) {
+                // TODO 실패한 이유를 확인하여 그에 맞은 대응을 할 수 있도록 해야한다.
+                startRequiredMockLocationDialog()
             }
         }
     }
