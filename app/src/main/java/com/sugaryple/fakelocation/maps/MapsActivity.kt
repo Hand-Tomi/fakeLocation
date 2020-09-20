@@ -13,9 +13,7 @@ import androidx.lifecycle.observe
 import com.eazypermissions.common.model.PermissionResult
 import com.eazypermissions.livedatapermission.PermissionManager
 import com.google.android.libraries.maps.SupportMapFragment
-import com.google.android.libraries.maps.model.Marker
 import com.sugaryple.fakelocation.R
-import com.sugaryple.fakelocation.data.SimpleLatLng
 import com.sugaryple.fakelocation.databinding.ActivityMapsBinding
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkManager
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
@@ -41,7 +39,6 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
         )
     }
     private val viewModel: MapsViewModel by viewModel { parametersOf(mapModel) }
-    private var targetMarker: Marker? = null
     private val fakeGpsManager: FakeGpsWorkManager by inject()
     private val gpsProviderModel: GpsProviderModel by inject()
     private val myLocationHelper: MyLocationHelper by inject()
@@ -70,15 +67,6 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
     private fun fakeGpsManagerObserve() {
         fakeGpsManager.state.observe(this) { viewModel.onChangedState(it) }
-    }
-
-    private fun clearTargetMarker() {
-        targetMarker?.remove()
-    }
-
-    private fun setTargetMarker(latLng: SimpleLatLng) {
-        clearTargetMarker()
-        targetMarker = mapModel.addMarker(latLng)
     }
 
     override fun onResume() {
