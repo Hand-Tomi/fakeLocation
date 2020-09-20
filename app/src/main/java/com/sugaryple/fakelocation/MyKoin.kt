@@ -39,7 +39,7 @@ class MyKoin {
 
     private fun getViewModels() = module {
         viewModel { (mapModel: MapModel) ->
-            MapsViewModel(mapModel)
+            MapsViewModel(mapModel, get())
         }
     }
 

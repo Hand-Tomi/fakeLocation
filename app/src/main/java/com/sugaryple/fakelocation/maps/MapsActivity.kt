@@ -71,13 +71,7 @@ class MapsActivity : AppCompatActivity(), PermissionManager.PermissionObserver {
 
     override fun onResume() {
         super.onResume()
-        gpsProviderModelInit()
-    }
-
-    private fun gpsProviderModelInit() {
-        if (gpsProviderModel.isGPSProviderEnabled()) {
-            gpsProviderModel.initMockLocationProvider()
-        }
+        viewModel.initMockLocationProvider()
     }
 
     private fun viewModelObserve() {

@@ -9,9 +9,11 @@ import com.sugaryple.fakelocation.data.SimpleLatLng
 import com.sugaryple.fakelocation.feature.fakeGps.FakeGpsWorkSate
 import com.sugaryple.fakelocation.map.MapModel
 import com.sugaryple.fakelocation.map.MyMarker
+import com.sugaryple.fakelocation.model.GpsProviderModel
 
 class MapsViewModel(
-    private val mapModel: MapModel
+    private val mapModel: MapModel,
+    private val gpsProviderModel: GpsProviderModel
 ): ViewModel() {
 
     private var targetMarker: MyMarker? = null
@@ -31,6 +33,12 @@ class MapsViewModel(
     private val _fakeGpsWorkFailedEvent = MutableLiveData<Event<Unit>>()
     val fakeGpsWorkFailedEvent: LiveData<Event<Unit>>
         get() = _fakeGpsWorkFailedEvent
+
+    fun initMockLocationProvider() {
+        if (gpsProviderModel.isGPSProviderEnabled()) {
+            gpsProviderModel.initMockLocationProvider()
+        }
+    }
 
     fun onClickPlay() {
         _clickEventPlay.value = Event(Unit)
